@@ -1,5 +1,5 @@
 // Supabase Configuration
-const SUPABASE_URL = "https://vktnvjixebmozuvebwm.supabase.co";
+const SUPABASE_URL = "https://vktnvjixebmozuvubewm.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrdG52aml4ZWJtb3p1dnViZXdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1ODcwNTMsImV4cCI6MjA5MjE2MzA1M30.nH1ptjBAsJ9HKmLGAmJfcnIJxNowcDUv0JLOXJOuVS8";
 
 // Initialize Supabase Client (Using a different name to avoid conflict with the global 'supabase' object)
