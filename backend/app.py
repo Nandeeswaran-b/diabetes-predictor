@@ -58,16 +58,18 @@ def predict():
         
         # Save to Supabase
         conn = get_db_connection()
+        user_id = data.get('user_id') # Get user_id if provided
+
         if conn:
             cur = conn.cursor()
             query = """
-                INSERT INTO predictions (pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age, result, confidence)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO predictions (pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age, result, confidence, user_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             cur.execute(query, (
                 data['pregnancies'], data['glucose'], data['blood_pressure'],
                 data['skin_thickness'], data['insulin'], data['bmi'],
-                data['diabetes_pedigree'], data['age'], result_text, confidence
+                data['diabetes_pedigree'], data['age'], result_text, confidence, user_id
             ))
             conn.commit()
             cur.close()
@@ -83,13 +85,19 @@ def predict():
 
 @app.route('/history', methods=['GET'])
 def history():
+    user_id = request.args.get('user_id') # Get user_id from query params
+
     conn = get_db_connection()
     if not conn:
         return jsonify({"error": "Database connection not configured. Set DATABASE_URL env var."}), 500
     
     try:
         cur = conn.cursor()
-        cur.execute("SELECT id, glucose, bmi, age, result, confidence, created_at FROM predictions ORDER BY created_at DESC")
+        if user_id:
+            cur.execute("SELECT id, glucose, bmi, age, result, confidence, created_at FROM predictions WHERE user_id = %s ORDER BY created_at DESC", (user_id,))
+        else:
+            cur.execute("SELECT id, glucose, bmi, age, result, confidence, created_at FROM predictions ORDER BY created_at DESC")
+        
         rows = cur.fetchall()
         
         history_data = []
